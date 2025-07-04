@@ -8,13 +8,15 @@ public class Main {
         Scanner sc = new Scanner(System.in);
 
         System.out.println(
-                        "┌──────────────────────────────┐\n" +
-                        "│                              │\n" +
-                        "│  Welcome to CLI-Tic-Tac-Toe  │\n" +
-                        "│    Java Bootcamp Project1    │\n" +
-                        "│      Made by Fkhrayef        │\n" +
-                        "│                              │\n" +
-                        "└──────────────────────────────┘\n");
+                """
+                        ┌──────────────────────────────┐
+                        │                              │
+                        │  Welcome to CLI-Tic-Tac-Toe  │
+                        │    Java Bootcamp Project1    │
+                        │      Made by Fkhrayef        │
+                        │                              │
+                        └──────────────────────────────┘
+                        """);
 
         char[][] board = {
                 {'1', '2', '3'},
@@ -22,18 +24,24 @@ public class Main {
                 {'7', '8', '9'}
         };
 
-        printBoard(board);
+        // 2D Array holding winner pattern
+        boolean[][] highlight = new boolean[3][3];
+
+        // print initial board
+        printBoard(board, highlight, ' ');
 
         while (true) {
-            int isDone = 0;
+            int isDone;
 
             // Player Turn
+            // input
             System.out.println("Pick a number to play in: ");
             String input = sc.next();
             char choice = '\0';
             if (input.length() == 1) {
                 choice = input.charAt(0);
             }
+            // play
             try {
                 playChoice(board, choice, 'X');
             } catch (Exception e) {
@@ -41,20 +49,21 @@ public class Main {
                 continue;
             }
             // Check if the game is done
-            isDone = checkIsDone(board, 'X');
+            isDone = checkIsDone(board, 'X', highlight);
             if (isDone == 1) {
-                printBoard(board);
+                printBoard(board, highlight, 'X');
                 System.out.println("Player Wins!");
                 break;
             }
             if (isDone == 2) {
-                printBoard(board);
+                printBoard(board, highlight, ' ');
                 System.out.println("Draw!");
                 break;
             }
 
 
             // Computer turn
+            // play
             try {
                 char computerChoice = randomChoice(board);
                 playChoice(board, computerChoice, 'O');
@@ -65,29 +74,40 @@ public class Main {
                 continue;
             }
             // Check if the game is done
-            isDone = checkIsDone(board, 'O');
+            isDone = checkIsDone(board, 'O', highlight);
             if (isDone == 1) {
-                printBoard(board);
+                printBoard(board, highlight, 'O');
                 System.out.println("Computer Wins!");
                 break;
             }
             if (isDone == 2) {
-                printBoard(board);
+                printBoard(board, highlight, ' ');
                 System.out.println("Draw!");
                 break;
             }
 
-            printBoard(board);
+            printBoard(board, highlight, ' ');
 
         }
     }
 
-    public static void printBoard(char[][] board) {
+    public static void printBoard(char[][] board, boolean[][] highlight, char winner) {
+        // Color for highlighting Winner
+        final String GREEN = "\u001B[32m";
+        final String RED = "\u001B[31m";
+        final String RESET = "\u001B[0m";
+
+        String color = (winner == 'X') ? GREEN : RED;
+
         System.out.println();
         for (int i = 0; i < board.length; i++) {
             System.out.print(" ");
             for (int j = 0; j < board[i].length; j++) {
-                System.out.print(board[i][j]);
+                if (highlight[i][j]) {
+                    System.out.print(color + board[i][j] + RESET);
+                } else {
+                    System.out.print(board[i][j]);
+                }
                 if (j < 2) System.out.print(" │ ");
             }
             System.out.println();
@@ -186,7 +206,7 @@ public class Main {
         return availableChoices.get(randomIndex);
     }
 
-    public static int checkIsDone(char[][] board, char turn) {
+    public static int checkIsDone(char[][] board, char turn, boolean[][] highlight) {
         // return 0: game is not done
         // return 1: game is won
         // return 2: game is draw
@@ -194,6 +214,7 @@ public class Main {
         // First Row Win Case
         for (int i = 0; i < 3; i++) {
             if (board[i][0] == turn && board[i][1] == turn && board[i][2] == turn) {
+                highlight[i][0] = highlight[i][1] = highlight[i][2] = true;
                 return 1;
             }
         }
@@ -201,6 +222,7 @@ public class Main {
         // Check Column Win Case
         for (int i = 0; i < 3; i++) {
             if (board[0][i] == turn && board[1][i] == turn && board[2][i] == turn) {
+                highlight[0][i] = highlight[1][i] = highlight[2][i] = true;
                 return 1;
             }
         }
@@ -208,10 +230,12 @@ public class Main {
         // Check Diagonal Win Case
         // First Diagonal
         if (board[0][0] == turn && board[1][1] == turn && board[2][2] == turn) {
+            highlight[0][0] = highlight[1][1] = highlight[2][2] = true;
             return 1;
         }
         // Second Diagonal
         if (board[0][2] == turn && board[1][1] == turn && board[2][0] == turn) {
+            highlight[0][2] = highlight[1][1] = highlight[2][0] = true;
             return 1;
         }
 
