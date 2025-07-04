@@ -23,6 +23,37 @@ public class Main {
         };
 
         printBoard(board);
+
+        while (true) {
+
+            // Player Turn
+            System.out.println("Pick a number to play in: ");
+            String input = sc.next();
+            char choice = '\0';
+            if (input.length() == 1) {
+                choice = input.charAt(0);
+            }
+            try {
+                playChoice(board, choice, 'X');
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+                continue;
+            }
+
+            // Computer turn
+            try {
+                char computerChoice = randomChoice(board);
+                playChoice(board, computerChoice, 'O');
+            } catch (ArrayIndexOutOfBoundsException e) {
+                System.out.println(e.getMessage());
+            } catch (InputMismatchException e) {
+                System.out.println(e.getMessage());
+                continue;
+            }
+
+            printBoard(board);
+
+        }
     }
 
     public static void printBoard(char[][] board) {
