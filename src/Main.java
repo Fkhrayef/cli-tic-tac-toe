@@ -25,6 +25,7 @@ public class Main {
         printBoard(board);
 
         while (true) {
+            int isDone = 0;
 
             // Player Turn
             System.out.println("Pick a number to play in: ");
@@ -39,6 +40,19 @@ public class Main {
                 System.out.println(e.getMessage());
                 continue;
             }
+            // Check if the game is done
+            isDone = checkIsDone(board, 'X');
+            if (isDone == 1) {
+                printBoard(board);
+                System.out.println("Player Wins!");
+                break;
+            }
+            if (isDone == 2) {
+                printBoard(board);
+                System.out.println("Draw!");
+                break;
+            }
+
 
             // Computer turn
             try {
@@ -49,6 +63,18 @@ public class Main {
             } catch (InputMismatchException e) {
                 System.out.println(e.getMessage());
                 continue;
+            }
+            // Check if the game is done
+            isDone = checkIsDone(board, 'O');
+            if (isDone == 1) {
+                printBoard(board);
+                System.out.println("Computer Wins!");
+                break;
+            }
+            if (isDone == 2) {
+                printBoard(board);
+                System.out.println("Draw!");
+                break;
             }
 
             printBoard(board);
@@ -201,5 +227,4 @@ public class Main {
         // Draw
         return 2;
     }
-
 }
