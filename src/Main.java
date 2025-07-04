@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.InputMismatchException;
-import java.util.Random;
-import java.util.Scanner;
+import java.util.*;
 
 public class Main {
     public static void main(String[] args) {
@@ -17,78 +14,116 @@ public class Main {
                         │                              │
                         └──────────────────────────────┘
                         """);
-
-        char[][] board = {
-                {'1', '2', '3'},
-                {'4', '5', '6'},
-                {'7', '8', '9'}
-        };
-
-        // 2D Array holding winner pattern
-        boolean[][] highlight = new boolean[3][3];
-
-        // print initial board
-        printBoard(board, highlight, ' ');
-
+        int bestOf;
         while (true) {
-            int isDone;
-
-            // Player Turn
-            // input
-            System.out.println("Pick a number to play in: ");
-            String input = sc.next();
-            char choice = '\0';
-            if (input.length() == 1) {
-                choice = input.charAt(0);
-            }
-            // play
             try {
-                playChoice(board, choice, 'X');
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                continue;
-            }
-            // Check if the game is done
-            isDone = checkIsDone(board, 'X', highlight);
-            if (isDone == 1) {
-                printBoard(board, highlight, 'X');
-                System.out.println("Player Wins!");
-                break;
-            }
-            if (isDone == 2) {
-                printBoard(board, highlight, ' ');
-                System.out.println("Draw!");
-                break;
-            }
-
-
-            // Computer turn
-            // play
-            try {
-                char computerChoice = randomChoice(board);
-                playChoice(board, computerChoice, 'O');
-            } catch (ArrayIndexOutOfBoundsException e) {
-                System.out.println(e.getMessage());
+                System.out.println("Best of 1 or 3?");
+                bestOf = sc.nextInt();
+                if (bestOf != 1 && bestOf != 3) {
+                    throw new InputMismatchException();
+                }
             } catch (InputMismatchException e) {
-                System.out.println(e.getMessage());
+                System.out.println("Invalid input, enter 1 or 3");
+                sc.nextLine();
                 continue;
             }
-            // Check if the game is done
-            isDone = checkIsDone(board, 'O', highlight);
-            if (isDone == 1) {
-                printBoard(board, highlight, 'O');
-                System.out.println("Computer Wins!");
-                break;
-            }
-            if (isDone == 2) {
-                printBoard(board, highlight, ' ');
-                System.out.println("Draw!");
-                break;
-            }
+            break;
+        }
 
+        int playerWon = 0;
+        int computerWon = 0;
+
+        for (int i = 1; i <= bestOf; i++) {
+            char[][] board = {
+                    {'1', '2', '3'},
+                    {'4', '5', '6'},
+                    {'7', '8', '9'}
+            };
+
+            // 2D Array holding winner pattern
+            boolean[][] highlight = new boolean[3][3];
+
+            System.out.println("\nGame " + i + " of " + bestOf);
+
+            // print initial board
             printBoard(board, highlight, ' ');
 
+            while (true) {
+
+                int isDone;
+
+                // Player Turn
+                // input
+                System.out.println("Pick a number to play in: ");
+                String input = sc.next();
+                char choice = '\0';
+                if (input.length() == 1) {
+                    choice = input.charAt(0);
+                }
+                // play
+                try {
+                    playChoice(board, choice, 'X');
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                    continue;
+                }
+                // Check if the game is done
+                isDone = checkIsDone(board, 'X', highlight);
+                if (isDone == 1) {
+                    printBoard(board, highlight, 'X');
+                    System.out.println("Player Wins Game " + i + " of " + bestOf + "!");
+                    playerWon++;
+                    break;
+                }
+                if (isDone == 2) {
+                    printBoard(board, highlight, ' ');
+                    System.out.println("Draw!");
+                    break;
+                }
+
+
+                // Computer turn
+                // play
+                try {
+                    char computerChoice = randomChoice(board);
+                    playChoice(board, computerChoice, 'O');
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    System.out.println(e.getMessage());
+                } catch (InputMismatchException e) {
+                    System.out.println(e.getMessage());
+                    continue;
+                }
+                // Check if the game is done
+                isDone = checkIsDone(board, 'O', highlight);
+                if (isDone == 1) {
+                    printBoard(board, highlight, 'O');
+                    System.out.println("Computer Wins Game " + i + " of " + bestOf + "!");
+                    computerWon++;
+                    break;
+                }
+                if (isDone == 2) {
+                    printBoard(board, highlight, ' ');
+                    System.out.println("Draw!");
+                    break;
+                }
+
+                printBoard(board, highlight, ' ');
+
+            }
+
+            if (playerWon == 2 || computerWon == 2) break;
         }
+
+        System.out.println("\nFinal Score: Player " + playerWon + " - " + computerWon + " Computer");
+        if (playerWon > computerWon) {
+            System.out.println("🎉 Player wins the match!");
+        } else if (computerWon > playerWon) {
+            System.out.println("💻 Computer wins the match!");
+        } else {
+            System.out.println("🤝 It's a tie overall!");
+        }
+
+
     }
 
     public static void printBoard(char[][] board, boolean[][] highlight, char winner) {
