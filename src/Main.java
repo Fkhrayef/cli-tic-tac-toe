@@ -160,4 +160,46 @@ public class Main {
         return availableChoices.get(randomIndex);
     }
 
+    public static int checkIsDone(char[][] board, char turn) {
+        // return 0: game is not done
+        // return 1: game is won
+        // return 2: game is draw
+
+        // First Row Win Case
+        for (int i = 0; i < 3; i++) {
+            if (board[i][0] == turn && board[i][1] == turn && board[i][2] == turn) {
+                return 1;
+            }
+        }
+
+        // Check Column Win Case
+        for (int i = 0; i < 3; i++) {
+            if (board[0][i] == turn && board[1][i] == turn && board[2][i] == turn) {
+                return 1;
+            }
+        }
+
+        // Check Diagonal Win Case
+        // First Diagonal
+        if (board[0][0] == turn && board[1][1] == turn && board[2][2] == turn) {
+            return 1;
+        }
+        // Second Diagonal
+        if (board[0][2] == turn && board[1][1] == turn && board[2][0] == turn) {
+            return 1;
+        }
+
+        // Ongoing Case
+        for (char[] chars : board) {
+            for (char aChar : chars) {
+                if (aChar >= '1' && aChar <= '9') {
+                    return 0;
+                }
+            }
+        }
+
+        // Draw
+        return 2;
+    }
+
 }
