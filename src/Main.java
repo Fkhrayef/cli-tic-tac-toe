@@ -1,23 +1,30 @@
 import java.util.*;
 
 public class Main {
+    // Color for Pretty prints
+    public static final String GREEN = "\u001B[32m";
+    public static final String RED = "\u001B[31m";
+    public static final String RESET = "\u001B[0m";
+    public static final String BOLD = "\u001B[1m";
+
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
-        System.out.println(
+        System.out.println(GREEN +
                 """
-                        ┌──────────────────────────────┐
-                        │                              │
-                        │  Welcome to CLI-Tic-Tac-Toe  │
-                        │    Java Bootcamp Project1    │
-                        │      Made by Fkhrayef        │
-                        │                              │
-                        └──────────────────────────────┘
-                        """);
+                ╔════════════════════════════════════╗
+                ║                                    ║
+                ║          CLI Tic-Tac-Toe           ║
+                ║     Java Bootcamp – Project 1      ║
+                ║         Made by Fkhrayef           ║
+                ║                                    ║
+                ╚════════════════════════════════════╝
+                """ + RESET);
+
         int bestOf;
         while (true) {
             try {
-                System.out.println("Best of 1 or 3?");
+                System.out.println("🕹️ Best of 1 or 3?");
                 bestOf = sc.nextInt();
                 if (bestOf != 1 && bestOf != 3) {
                     throw new InputMismatchException();
@@ -43,7 +50,7 @@ public class Main {
             // 2D Array holding winner pattern
             boolean[][] highlight = new boolean[3][3];
 
-            System.out.println("\nGame " + i + " of " + bestOf);
+            System.out.println("\n🎲 Round " + i + " / " + bestOf + " 🎲");
 
             // print initial board
             printBoard(board, highlight, ' ');
@@ -54,7 +61,7 @@ public class Main {
 
                 // Player Turn
                 // input
-                System.out.println("Pick a number to play in: ");
+                System.out.println("👤 Your Turn (X): Pick a number → ");
                 String input = sc.next();
                 char choice = '\0';
                 if (input.length() == 1) {
@@ -71,7 +78,7 @@ public class Main {
                 isDone = checkIsDone(board, 'X', highlight);
                 if (isDone == 1) {
                     printBoard(board, highlight, 'X');
-                    System.out.println("Player Wins Game " + i + " of " + bestOf + "!");
+                    System.out.println(GREEN + "Player Wins Game " + i + " of " + bestOf + "!" + RESET);
                     playerWon++;
                     break;
                 }
@@ -86,6 +93,7 @@ public class Main {
                 // play
                 try {
                     char computerChoice = randomChoice(board);
+                    System.out.println("🤖 Computer's Turn → " + computerChoice);
                     playChoice(board, computerChoice, 'O');
                 } catch (ArrayIndexOutOfBoundsException e) {
                     System.out.println(e.getMessage());
@@ -97,7 +105,7 @@ public class Main {
                 isDone = checkIsDone(board, 'O', highlight);
                 if (isDone == 1) {
                     printBoard(board, highlight, 'O');
-                    System.out.println("Computer Wins Game " + i + " of " + bestOf + "!");
+                    System.out.println(RED + "Computer Wins Game " + i + " of " + bestOf + "!" + RESET);
                     computerWon++;
                     break;
                 }
@@ -114,11 +122,11 @@ public class Main {
             if (playerWon == 2 || computerWon == 2) break;
         }
 
-        System.out.println("\nFinal Score: Player " + playerWon + " - " + computerWon + " Computer");
+        System.out.println("\n🏁 Final Score: 👤 Player " + playerWon + " - " + computerWon + " Computer 🤖");
         if (playerWon > computerWon) {
-            System.out.println("🎉 Player wins the match!");
+            System.out.println("🎉 " + GREEN + "You won the match!" + RESET);
         } else if (computerWon > playerWon) {
-            System.out.println("💻 Computer wins the match!");
+            System.out.println("💻 " + RED + "Computer wins the match!" + RESET);
         } else {
             System.out.println("🤝 It's a tie overall!");
         }
@@ -127,10 +135,6 @@ public class Main {
     }
 
     public static void printBoard(char[][] board, boolean[][] highlight, char winner) {
-        // Color for highlighting Winner
-        final String GREEN = "\u001B[32m";
-        final String RED = "\u001B[31m";
-        final String RESET = "\u001B[0m";
 
         String color = (winner == 'X') ? GREEN : RED;
 
@@ -140,9 +144,12 @@ public class Main {
             for (int j = 0; j < board[i].length; j++) {
                 if (highlight[i][j]) {
                     System.out.print(color + board[i][j] + RESET);
+                } else if (board[i][j] == 'X' || board[i][j] == 'O') {
+                    System.out.print(BOLD + board[i][j] + RESET);
                 } else {
                     System.out.print(board[i][j]);
                 }
+
                 if (j < 2) System.out.print(" │ ");
             }
             System.out.println();
