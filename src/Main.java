@@ -70,7 +70,7 @@ public class Main {
                 // play
                 try {
                     playChoice(board, choice, 'X');
-                } catch (Exception e) {
+                } catch (InputMismatchException e) {
                     System.out.println(e.getMessage());
                     continue;
                 }
