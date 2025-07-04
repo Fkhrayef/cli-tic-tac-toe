@@ -1,4 +1,6 @@
+import java.util.ArrayList;
 import java.util.InputMismatchException;
+import java.util.Random;
 import java.util.Scanner;
 
 public class Main {
@@ -105,6 +107,26 @@ public class Main {
             default:
                 throw new InputMismatchException("Invalid choice!");
         }
+    }
+
+    public static char randomChoice(char[][] board) throws ArrayIndexOutOfBoundsException {
+        Random random = new Random();
+
+        ArrayList<Character> availableChoices = new ArrayList<>();
+
+        for (char[] chars : board) {
+            for (char aChar : chars) {
+                if (aChar != 'X' && aChar != 'O') {
+                    availableChoices.add(aChar);
+                }
+            }
+        }
+        if (availableChoices.isEmpty()) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
+
+        int randomIndex = random.nextInt(availableChoices.size());
+        return availableChoices.get(randomIndex);
     }
 
 }
